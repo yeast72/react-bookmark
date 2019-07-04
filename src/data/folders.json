@@ -1,0 +1,19 @@
+ [{
+         "id": "0",
+         "name": "bookmark bar",
+         "childFolderIds": ["1", "2"],
+         "bookmarkIds": ["0", "1"]
+     },
+     {
+         "id": "1",
+         "name": "React Folder",
+         "childFolderIds": [""],
+         "bookmarkIds": ["0", "1"]
+     },
+     {
+         "id": "2",
+         "name": "Vue Folder",
+         "childFolderIds": [""],
+         "bookmarkIds": ["0", "1"]
+     }
+ ]

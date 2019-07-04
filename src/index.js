@@ -1,12 +1,33 @@
-import React from 'react';
-import ReactDOM from 'react-dom';
-import './index.css';
-import App from './App';
-import * as serviceWorker from './serviceWorker';
+import React from "react";
+import ReactDOM from "react-dom";
+import { createStore, compose, applyMiddleware } from "redux";
+import { Provider } from "react-redux";
+import thunk from "redux-thunk";
 
-ReactDOM.render(<App />, document.getElementById('root'));
+import reducer from "./reducers";
+import { getAllFolders, getAllBookmarks } from "./actions";
 
-// If you want your app to work offline and load faster, you can change
-// unregister() to register() below. Note this comes with some pitfalls.
-// Learn more about service workers: https://bit.ly/CRA-PWA
-serviceWorker.unregister();
+import App from "./containers/App";
+
+import "./index.css";
+
+const middleware = [thunk];
+
+const store = createStore(
+  reducer /* preloadedState, */,
+  compose(
+    applyMiddleware(...middleware),
+    window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__()
+  )
+);
+
+store.dispatch(getAllFolders());
+store.dispatch(getAllBookmarks());
+
+ReactDOM.render(
+  <Provider store={store}>
+    <App />
+  </Provider>,
+
+  document.getElementById("root")
+);
