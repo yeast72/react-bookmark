@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import { Link } from "react-router-dom";
 import Folder from "./Folder";
 import { connect } from "react-redux";
 
@@ -14,11 +15,13 @@ export class FolderItem extends Component {
   };
 
   render() {
-    const { parentId, id, childFolderIds, name, url } = this.props;
-    console.log(this.props);
+    const { parentId, childFolderIds, name, id } = this.props;
+
     return (
       <div>
-        <Folder name={name} url={url} />{" "}
+        <Link to={id}>
+          <Folder name={name} />{" "}
+        </Link>
         {typeof parentId !== "undefined" && (
           <a
             href="#"
@@ -35,7 +38,6 @@ export class FolderItem extends Component {
 }
 
 const mapStateToProps = (state, ownProps) => {
-  console.log(ownProps);
   return state.folders.byId[ownProps.id];
 };
 
