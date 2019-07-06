@@ -7,6 +7,20 @@ export default combineReducers({
   bookmarks
 });
 
+export const getChildFolder = (state, id) => {
+  const { folders } = state;
+  const bookmarks = getBookmarksFromFolderId(state, id);
+  const childFolder = fromFolder.getChildFolder(folders, id);
+  return { bookmarks, folders: childFolder };
+};
+
+export const getBookmarksFromFolderId = (state, id) => {
+  const { folders, bookmarks } = state;
+  const bookmarkIds = fromFolder.getFolder(folders, id).bookmarkIds;
+  return bookmarkIds.map(id => fromBookmark.getBookmark(bookmarks, id));
+};
+
 export const getRootFolder = state => {
-  return fromFolder.getFolder(state, "0");
+  const { folders } = state;
+  return fromFolder.getFolder(folders, "0");
 };

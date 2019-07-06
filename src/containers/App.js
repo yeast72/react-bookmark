@@ -1,13 +1,14 @@
 import React from "react";
 import FolderContainer from "./FolderContainer";
-import BookmarkContainer from "./BookmarkContainer";
+import ChildContainer from "./ChildContainer";
 import { BrowserRouter as Router, Route } from "react-router-dom";
 
 const App = () => (
   <div className="App">
     <Router>
       <FolderContainer>
-        <Route path="/:id" component={BookmarkContainer} />
+        <Route exact path="/" component={ChildContainer} />
+        <Route path="/:id" component={ChildContainer} />
       </FolderContainer>
     </Router>
   </div>

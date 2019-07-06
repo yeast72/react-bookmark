@@ -73,7 +73,14 @@ export default combineReducers({
   visibleFolderIds
 });
 
-export const getFolder = (state, id) => state.byId[id];
+export const getChildFolder = (state, id) => {
+  const { childFolderIds } = getFolder(state, id);
+  return childFolderIds.map(childId => getFolder(state, childId));
+};
+
+export const getFolder = (state, id) => {
+  return state.byId[id];
+};
 
 export const getVisibleFolders = state =>
   state.visibleFolderIds.map(id => getFolder(state, id));

@@ -1,8 +1,8 @@
 import React from "react";
 import { connect } from "react-redux";
 import { getRootFolder } from "../reducers";
-import FoldersList from "../components/FoldersList";
-import FolderItem from "../components/FolderItem";
+import FoldersList from "../components/Folder/FoldersList";
+import FolderItem from "../components/Folder/FolderItem";
 
 const FolderContainer = ({ rootFolder, children }) => {
   return (
@@ -14,7 +14,7 @@ const FolderContainer = ({ rootFolder, children }) => {
 };
 
 const mapStateToProps = (state, ownProps) => ({
-  rootFolder: getRootFolder(state.folders),
+  rootFolder: getRootFolder(state),
   children: ownProps.children
   //   children: ownProps
 });

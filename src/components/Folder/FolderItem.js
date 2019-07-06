@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { Link } from "react-router-dom";
+
 import Folder from "./Folder";
 import { connect } from "react-redux";
 
@@ -19,9 +19,7 @@ export class FolderItem extends Component {
 
     return (
       <div>
-        <Link to={id}>
-          <Folder name={name} />{" "}
-        </Link>
+        <Folder name={name} id={id} />{" "}
         {typeof parentId !== "undefined" && (
           <a
             href="#"
