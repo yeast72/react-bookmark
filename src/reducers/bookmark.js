@@ -1,8 +1,17 @@
-import { RECEIVE_BOOKMARKS } from "../constant/actionTypes";
+import {
+  RECEIVE_BOOKMARKS,
+  CREATE_BOOKMARK,
+  DELETE_BOOKMARK
+} from "../constant/actionTypes";
 import { combineReducers } from "redux";
 
-const bookmark = (state, action) => {
+const bookmarks = (state = {}, action) => {
   switch (action.type) {
+    case DELETE_BOOKMARK:
+      return state;
+    default:
+      console.log(state, action);
+      return state;
   }
 };
 
@@ -16,12 +25,18 @@ const byId = (state = {}, action) => {
           return obj;
         }, {})
       };
+    case CREATE_BOOKMARK:
+      const { bookmark } = action;
+      return {
+        ...state,
+        [bookmark.id]: bookmark
+      };
     default:
       const { bookmarkId } = action;
       if (bookmarkId) {
         return {
           ...state,
-          [bookmarkId]: bookmark(state[bookmarkId], action)
+          [bookmarkId]: bookmarks(state[bookmarkId], action)
         };
       }
       return state;
@@ -32,6 +47,8 @@ const visibleIds = (state = [], action) => {
   switch (action.type) {
     case RECEIVE_BOOKMARKS:
       return action.bookmarks.map(bookmark => bookmark.id);
+    case CREATE_BOOKMARK:
+      return [...state, action.bookmark.id];
     default:
       return state;
   }
@@ -44,4 +61,4 @@ export default combineReducers({
 
 export const getBookmark = (state, id) => state.byId[id];
 
-export const getVisibleBookmark = (state, id) => state.v;
+export const getVisibleBookmark = (state, id) => state.visibleIds;

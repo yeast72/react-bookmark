@@ -6,7 +6,9 @@ import {
   ADD_FOLDER_CHILD,
   REMOVE_FOLDER_CHILD,
   RECEIVE_FOLDERS,
-  DELETE_FOLDER
+  DELETE_FOLDER,
+  SELECT_FOLDER,
+  ADD_BOOKMARK
 } from "../constant/actionTypes";
 
 const childFolderIds = (state, action) => {
@@ -32,6 +34,11 @@ const folder = (state, action) => {
         ...state,
         childFolderIds: childFolderIds(state.childFolderIds, action)
       };
+    case ADD_BOOKMARK:
+      return {
+        ...state,
+        bookmarkIds: [...state.bookmarkIds, action.bookmarkId]
+      };
     default:
       return state;
   }
@@ -46,6 +53,11 @@ const byId = (state = {}, action) => {
           obj[folder.id] = folder;
           return obj;
         }, {})
+      };
+    case ADD_BOOKMARK:
+      return {
+        ...state,
+        [action.folderId]: folder(state[action.folderId], action)
       };
     default:
       const { folderId } = action;
@@ -68,9 +80,21 @@ const visibleFolderIds = (state = [], action) => {
   }
 };
 
+const selectedFolderId = (state = "", action) => {
+  switch (action.type) {
+    case RECEIVE_FOLDERS:
+      return "0";
+    case SELECT_FOLDER:
+      return action.folderId;
+    default:
+      return state;
+  }
+};
+
 export default combineReducers({
   byId,
-  visibleFolderIds
+  visibleFolderIds,
+  selectedFolderId
 });
 
 export const getChildFolder = (state, id) => {

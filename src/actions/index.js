@@ -12,6 +12,11 @@ const receiveBookmarks = bookmarks => ({
   bookmarks
 });
 
+export const selectFolder = folderId => ({
+  type: types.SELECT_FOLDER,
+  folderId
+});
+
 export const getAllFolders = () => dispatch => {
   bookmarkApp.getFolders(folders => {
     dispatch(receiveFolders(folders));
@@ -36,8 +41,8 @@ export const createFolder = folder => ({
 
 export const addBookmark = (bookmarkId, folderId) => ({
   type: types.ADD_BOOKMARK,
-  folderId: folderId,
-  bookmarkId: bookmarkId
+  bookmarkId: bookmarkId,
+  folderId: folderId
 });
 
 export const addFolder = (parentId, folderId) => ({
