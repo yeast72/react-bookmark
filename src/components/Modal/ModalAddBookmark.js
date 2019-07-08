@@ -22,7 +22,7 @@ export default class ModalAddBookmark extends Component {
   }
 
   render() {
-    const { onAddBookmark, onCancel } = this.props;
+    const { onCancel } = this.props;
     return (
       <Modal title="Add Bookmark">
         <div>

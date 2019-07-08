@@ -5,12 +5,11 @@ import {
 } from "../constant/actionTypes";
 import { combineReducers } from "redux";
 
-const bookmarks = (state = {}, action) => {
+const bookmarks = (state = [], action) => {
   switch (action.type) {
     case DELETE_BOOKMARK:
       return state;
     default:
-      console.log(state, action);
       return state;
   }
 };
@@ -61,4 +60,5 @@ export default combineReducers({
 
 export const getBookmark = (state, id) => state.byId[id];
 
-export const getVisibleBookmark = (state, id) => state.visibleIds;
+export const getVisibleBookmark = state =>
+  state.visibleIds.map(id => getBookmark(state, id));
