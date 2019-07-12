@@ -1,4 +1,3 @@
-import uuid from "uuid/v1";
 import * as types from "../constant/actionTypes";
 import bookmarkApp from "../data/bookmarkApp";
 
@@ -40,13 +39,35 @@ export const createFolder = folder => ({
 });
 
 export const addBookmark = (bookmarkId, folderId) => ({
-  type: types.ADD_BOOKMARK,
+  type: types.ADD_BOOKMARK_CHILD,
   bookmarkId: bookmarkId,
   folderId: folderId
 });
 
-export const addFolder = (parentId, folderId) => ({
-  type: types.ADD_FOLDER,
-  parentId: parentId,
+export const addFolder = (childId, folderId) => ({
+  type: types.ADD_FOLDER_CHILD,
+  childId: childId,
   folderId: folderId
+});
+
+export const deleteBookmarkChild = (bookmarkId, folderId) => ({
+  type: types.DELETE_BOOKMARK_CHILD,
+  bookmarkId: bookmarkId,
+  folderId: folderId
+});
+
+export const toggleAddFolderModal = () => ({
+  type: types.TOGGLE_ADD_FOLDER_MODAL
+});
+
+export const toggleAddBookmarkModal = () => ({
+  type: types.TOGGLE_ADD_BOOKMARK_MODAL
+});
+
+export const toggleUpdateBookmarkModal = () => ({
+  type: types.TOGGLE_UPDATE_BOOKMARK_MODAL
+});
+
+export const toggleUpdateFolderModal = () => ({
+  type: types.TOGGLE_UPDATE_FOLDER_MODAL
 });

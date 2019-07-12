@@ -9,7 +9,6 @@ export default class ChildFolderItem extends Component {
   render() {
     const { name, id, onSelectFolder } = this.props;
     const handleSelectFolder = () => {
-      console.log("hello");
       return onSelectFolder;
     };
     return (
