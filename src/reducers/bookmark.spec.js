@@ -1,40 +1,41 @@
 import reducer, * as bookmarks from "./bookmark";
 import * as types from "../constant/actionTypes";
 
+const bookmark1 = {
+  id: 1,
+  name: "Bookmark 1",
+  url: "https://bookmark1.com"
+};
+
+const bookmark2 = {
+  id: "2",
+  name: "Bookmark 2",
+  url: "https://bookmark2.com"
+};
+
 describe("reducers", () => {
   describe("bookmark", () => {
     const initailState = {
       visibleIds: [],
       byId: {}
     };
-
+    let state;
     it("should provide the initail state", () => {
       expect(reducer(undefined, {})).toEqual(initailState);
     });
 
-    it("should handle CREATE_BOOKMARK action", () => {
-      expect(
-        reducer(initailState, {
+    describe("when create bookmark", () => {
+      beforeEach(() => {
+        state = reducer(state, {
           type: types.CREATE_BOOKMARK,
-          bookmark: {
-            id: "1",
-            name: "Bookmark 1",
-            url: "https://bookmark1.com"
-          }
-        })
-      ).toEqual({
-        byId: {
-          "1": {
-            id: "1",
-            name: "Bookmark 1",
-            url: "https://bookmark1.com"
-          }
-        },
-        visibleIds: ["1"]
+          bookmark: bookmark1
+        });
+      });
+      it("should handle CREATE_BOOKMARK action", () => {
+        expect(bookmarks.getBookmark(state, 1)).toEqual(bookmark1);
       });
     });
 
-    let state;
     describe("when bookmarks are received", () => {
       beforeEach(() => {
         state = reducer(

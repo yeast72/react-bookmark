@@ -5,10 +5,11 @@ import {
   CREATE_FOLDER,
   ADD_FOLDER_CHILD,
   DELETE_BOOKMARK_CHILD,
-  DELETE_CHILD_FOLDER,
+  DELETE_FOLDER_CHILD,
   RECEIVE_FOLDERS,
   DELETE_FOLDER,
-  SELECT_FOLDER
+  SELECT_FOLDER,
+  EDIT_FOLDER_NAME
 } from "../constant/actionTypes";
 
 const initialFolder = {
@@ -22,7 +23,7 @@ const childFolderIds = (state = [], action) => {
   switch (action.type) {
     case ADD_FOLDER_CHILD:
       return [...state, action.childId];
-    case DELETE_CHILD_FOLDER:
+    case DELETE_FOLDER_CHILD:
       return state.filter(id => id !== action.childId);
     default:
       return state;
@@ -47,7 +48,7 @@ const folders = (state = initialFolder, action) => {
         folder: action.folder
       };
     case ADD_FOLDER_CHILD:
-    case DELETE_CHILD_FOLDER:
+    case DELETE_FOLDER_CHILD:
       return {
         ...state,
         childFolderIds: childFolderIds(state.childFolderIds, action)
@@ -58,12 +59,18 @@ const folders = (state = initialFolder, action) => {
         ...state,
         bookmarkIds: bookmarkIds(state.bookmarkIds, action)
       };
+    case EDIT_FOLDER_NAME:
+      return {
+        ...state,
+        name: action.name
+      };
     default:
       return state;
   }
 };
 
 const byId = (state = {}, action) => {
+  const { folderId } = action;
   switch (action.type) {
     case RECEIVE_FOLDERS:
       return {
@@ -79,8 +86,10 @@ const byId = (state = {}, action) => {
         ...state,
         [folder.id]: action.folder
       };
+    case DELETE_FOLDER:
+      const descendantIds = getAllDescendantIds(state, folderId);
+      return deleteMany(state, [folderId, ...descendantIds]);
     default:
-      const { folderId } = action;
       if (folderId) {
         return {
           ...state,
@@ -119,6 +128,18 @@ export default combineReducers({
   visibleFolderIds,
   selectedFolderId
 });
+
+const getAllDescendantIds = (state, folderId) =>
+  state[folderId].childFolderIds.reduce(
+    (acc, childId) => [...acc, childId, ...getAllDescendantIds(state, childId)],
+    []
+  );
+
+const deleteMany = (state, folderId) => {
+  state = { ...state };
+  folderId.forEach(id => delete state[id]);
+  return state;
+};
 
 export const getChildFolder = (state, id) => {
   const { childFolderIds } = getFolder(state, id);

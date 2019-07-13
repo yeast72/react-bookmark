@@ -1,6 +1,9 @@
 import React from "react";
 import ReactDOM from "react-dom";
 import { createStore, compose, applyMiddleware } from "redux";
+import { persistStore, persistReducer } from "redux-persist";
+import storage from "redux-persist/lib/storage";
+
 import { Provider } from "react-redux";
 import thunk from "redux-thunk";
 import loggerMiddleware from "./middleware/logger";
@@ -12,6 +15,11 @@ import { getAllFolders, getAllBookmarks } from "./actions";
 import App from "./containers/App";
 
 import "./index.css";
+
+const persistConfig = {
+  key: "root",
+  storage
+};
 
 const middlewareEnhancer = applyMiddleware(loggerMiddleware, thunk);
 const composedEnhancers = compose(

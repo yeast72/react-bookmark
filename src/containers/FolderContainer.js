@@ -16,8 +16,6 @@ const FolderContainer = ({ rootFolder }) => {
   return (
     <FoldersList title="Bookmark bar">
       <FolderNode id={rootFolder.id} />
-
-      <FolderNode id={rootFolder.id} />
     </FoldersList>
   );
 };

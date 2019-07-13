@@ -56,6 +56,23 @@ export const deleteBookmarkChild = (bookmarkId, folderId) => ({
   folderId: folderId
 });
 
+export const deleteFolder = folderId => ({
+  type: types.DELETE_FOLDER,
+  folderId: folderId
+});
+
+export const deleteFolderChild = (folderId, childId) => ({
+  type: types.DELETE_FOLDER_CHILD,
+  folderId: folderId,
+  childId: childId
+});
+
+export const editFolderName = (folderId, name) => ({
+  type: types.EDIT_FOLDER_NAME,
+  folderId: folderId,
+  name: name
+});
+
 export const toggleAddFolderModal = () => ({
   type: types.TOGGLE_ADD_FOLDER_MODAL
 });

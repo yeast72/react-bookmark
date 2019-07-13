@@ -78,8 +78,8 @@ class App extends Component {
   }
 
   handleAddBookmark(name, url) {
-    const { tolggleAddBookmarkModal } = this.props;
-    tolggleAddBookmarkModal();
+    const { toggleAddBookmarkModal } = this.props;
+    toggleAddBookmarkModal();
     const newId = uuidv1();
     const bookmark = {
       id: newId,

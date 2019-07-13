@@ -106,6 +106,53 @@ describe("reducers", () => {
             }
           ]);
         });
+
+        describe("when deleted folder", () => {
+          beforeEach(() => {
+            state = reducer(state, {
+              type: types.DELETE_FOLDER_CHILD,
+              folderId: 1,
+              childId: 2
+            });
+
+            state = reducer(state, {
+              type: types.DELETE_FOLDER,
+              folderId: 2
+            });
+          });
+
+          it("should remove child id in parant folder", () => {
+            expect(folders.getFolder(state, 1)).toEqual({
+              id: 1,
+              name: "Folder 1",
+              childFolderIds: [],
+              bookmarkIds: []
+            });
+          });
+
+          it("should delete folder", () => {
+            expect(folders.getFolder(state, 2)).toEqual(undefined);
+          });
+        });
+      });
+
+      describe("when edit folder name", () => {
+        beforeEach(() => {
+          state = reducer(state, {
+            type: types.EDIT_FOLDER_NAME,
+            folderId: 1,
+            name: "edited folder name"
+          });
+        });
+
+        it("should edit folder name", () => {
+          expect(folders.getFolder(state, 1)).toEqual({
+            id: 1,
+            name: "edited folder name",
+            childFolderIds: [],
+            bookmarkIds: []
+          });
+        });
       });
 
       describe("when a bookmark id is added to the folder", () => {
