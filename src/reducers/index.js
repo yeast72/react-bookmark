@@ -2,7 +2,6 @@ import { combineReducers } from "redux";
 import folders, * as fromFolder from "./folder";
 import bookmarks, * as fromBookmark from "./bookmark";
 import modals from "./modal";
-import { SELECT_FOLDER, RECEIVE_BOOKMARKS } from "../constant/actionTypes";
 
 export const getChildFolder = (state, id) => {
   const { folders } = state;

@@ -73,6 +73,13 @@ export const editFolderName = (folderId, name) => ({
   name: name
 });
 
+export const editBookmark = (bookmarkId, name, url) => ({
+  type: types.EDIT_BOOKMARK,
+  bookmarkId: bookmarkId,
+  name: name,
+  url: url
+});
+
 export const toggleAddFolderModal = () => ({
   type: types.TOGGLE_ADD_FOLDER_MODAL
 });
