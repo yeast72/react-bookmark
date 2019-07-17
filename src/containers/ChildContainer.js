@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import styled from "styled-components";
 import { connect } from "react-redux";
-import { getChildFolder, getBookmarkItemlistById } from "../reducers";
+import { getBookmarkItemlistById } from "../reducers";
 import { selectFolder } from "../actions";
 
 import BookmarkItem from "../components/Bookmark/BookmarkItem";
@@ -54,7 +54,7 @@ class ChildContainer extends Component {
         case "bookmark":
           return renderChildBookmark(bookmarkList[id].bookmark);
         default:
-          break;
+          return "";
       }
     });
 

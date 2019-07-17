@@ -5,13 +5,6 @@ import { getRootFolder } from "../reducers";
 import FoldersList from "../components/Folder/FoldersList";
 import FolderNode from "./FolderNode";
 
-const BookmarkFolderMode = styled.div`
-  display: block;
-  overflow-y: auto;
-  padding: 8px 3px 0 3px;
-  user-select: none;
-`;
-
 const FolderContainer = ({ rootFolder }) => {
   return (
     <FoldersList title="Bookmark bar">

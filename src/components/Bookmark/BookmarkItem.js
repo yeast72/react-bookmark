@@ -5,7 +5,7 @@ const BookmarkItem = props => {
   const { name, url, id } = props;
   return (
     <div>
-      <Bookmark name={name} url={url} />
+      <Bookmark id={id} name={name} url={url} />
     </div>
   );
 };

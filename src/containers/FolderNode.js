@@ -21,7 +21,6 @@ const FolderNodeContainer = styled.ul`
 const FolderContainer = styled.div`
   cursor: pointer;
   display: inline;
-  height: 40;
   position: relative;
 `;
 
@@ -36,11 +35,19 @@ export class FolderNode extends Component {
     this.state = { open: false };
     this.handleOnSelectFolder = this.handleOnSelectFolder.bind(this);
     this.handleToggleFolder = this.handleToggleFolder.bind(this);
+    this.handleDeleteFolder = this.handleDeleteFolder.bind(this);
   }
 
   handleToggleFolder(e) {
     e.stopPropagation();
     this.setState({ open: !this.state.open });
+  }
+
+  handleDeleteFolder(e) {
+    const { id, onDeleteFolder, onDeleteFolderChild, parentId } = this.props;
+    e.stopPropagation();
+    onDeleteFolderChild(parentId, id);
+    onDeleteFolder(id);
   }
 
   handleOnSelectFolder(e) {
@@ -60,9 +67,11 @@ export class FolderNode extends Component {
   };
 
   render() {
-    const { parentId, childFolderIds, name, id, selectFolder } = this.props;
+    const { parentId, childFolderIds, name, id } = this.props;
     const haveChild = childFolderIds.length;
-    const renderOption = <ButtonIcon icon={faTrashAlt} />;
+    const renderOption = (
+      <ButtonIcon onClick={this.handleDeleteFolder} icon={faTrashAlt} />
+    );
     const renderToggleFolder = haveChild ? (
       <span onClick={this.handleToggleFolder}>
         <ButtonIcon icon={faCaretDown} />
@@ -100,6 +109,12 @@ const mapDispatchToProps = dispatch => {
   return {
     onSelectFolder: id => {
       dispatch(selectFolder(id));
+    },
+    onDeleteFolder: id => {
+      dispatch(deleteFolder(id));
+    },
+    onDeleteFolderChild: (folderId, childId) => {
+      dispatch(deleteFolderChild(folderId, childId));
     }
   };
 };

@@ -40,7 +40,7 @@ const ChildItem = props => {
   const { type, active } = props;
   return (
     <Container>
-      <ChildContainer>{props.children}</ChildContainer>
+      <ChildContainer active={active}>{props.children}</ChildContainer>
       <MenuButtonContainer>
         <StyledButton icon={faEdit} />
         <StyledButton icon={faTrashAlt} />
