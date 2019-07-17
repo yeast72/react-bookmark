@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { BrowserRouter as Router, Route } from "react-router-dom";
+import { Router, Route } from "react-router-dom";
 import styled from "styled-components";
 import { connect } from "react-redux";
 import uuidv1 from "uuid/v1";
@@ -10,6 +10,7 @@ import Navbar from "../components/Navbar";
 import ModalAddBookmark from "../components/Modal/ModalAddBookmark";
 import ModalAddFolder from "../components/Modal/ModalAddFolder";
 
+import history from "../history";
 import {
   addBookmark,
   createBookmark,
@@ -120,7 +121,7 @@ class App extends Component {
       <AppContainer>
         <Navbar />
         <MainContainer>
-          <Router>
+          <Router history={history}>
             <SideBar>
               <FolderContainer />
             </SideBar>

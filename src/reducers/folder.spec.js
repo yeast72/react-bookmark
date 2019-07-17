@@ -179,23 +179,13 @@ describe("reducers", () => {
           {},
           {
             type: types.CREATE_FOLDER,
-            folder: {
-              id: 1,
-              name: "Folder 1",
-              childFolderIds: [],
-              bookmarkIds: []
-            }
+            folder: folder1
           }
         );
       });
 
       it("should created folder", () => {
-        expect(folders.getFolder(state, 1)).toEqual({
-          id: 1,
-          name: "Folder 1",
-          childFolderIds: [],
-          bookmarkIds: []
-        });
+        expect(folders.getFolder(state, 1)).toEqual(folder1);
       });
 
       it("contain no other folder", () => {
@@ -203,9 +193,7 @@ describe("reducers", () => {
       });
 
       it("lists all of the folders as visible", () => {
-        expect(folders.getVisibleFolders(state)).toEqual([
-          { id: 1, name: "Folder 1", childFolderIds: [], bookmarkIds: [] }
-        ]);
+        expect(folders.getVisibleFolders(state)).toEqual([folder1]);
       });
     });
   });

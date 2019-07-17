@@ -61,7 +61,10 @@ const folders = (state = initialFolder, action) => {
   switch (action.type) {
     case CREATE_FOLDER:
       return {
-        folder: action.folder
+        ...action.folder,
+        bookmarkIds: bookmarkIds(state.bookmarkIds, action),
+        childFolderIds: childFolderIds(state.childFolderIds, action),
+        orderChildIds: orderChildIds(state.orderChildIds, action)
       };
     case ADD_FOLDER_CHILD:
     case DELETE_FOLDER_CHILD:
@@ -102,7 +105,7 @@ const byId = (state = {}, action) => {
       const { folder } = action;
       return {
         ...state,
-        [folder.id]: action.folder
+        [folder.id]: folders(action.folder, action)
       };
     case DELETE_FOLDER:
       const descendantIds = getAllDescendantIds(state, folderId);
