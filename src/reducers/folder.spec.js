@@ -1,6 +1,30 @@
 import * as types from "../constant/actionTypes";
 import reducer, * as folders from "./folder";
 
+const initialFolder = {
+  id: "",
+  name: "",
+  childFolderIds: [],
+  bookmarkIds: [],
+  orderChildIds: []
+};
+
+const folder1 = {
+  id: 1,
+  name: "Folder 1",
+  childFolderIds: [],
+  bookmarkIds: [],
+  orderChildIds: []
+};
+
+const folder2 = {
+  id: 2,
+  name: "Folder 2",
+  childFolderIds: [],
+  bookmarkIds: [],
+  orderChildIds: []
+};
+
 describe("reducers", () => {
   describe("folder", () => {
     let state;
@@ -19,37 +43,14 @@ describe("reducers", () => {
           {},
           {
             type: types.RECEIVE_FOLDERS,
-            folders: [
-              {
-                id: 1,
-                name: "Folder 1",
-                childFolderIds: [],
-                bookmarkIds: []
-              },
-              {
-                id: 2,
-                name: "Folder 2",
-                childFolderIds: [],
-                bookmarkIds: []
-              }
-            ]
+            folders: [folder1, folder2]
           }
         );
       });
 
       it("contains the folders from the action", () => {
-        expect(folders.getFolder(state, 1)).toEqual({
-          id: 1,
-          name: "Folder 1",
-          childFolderIds: [],
-          bookmarkIds: []
-        });
-        expect(folders.getFolder(state, 2)).toEqual({
-          id: 2,
-          name: "Folder 2",
-          childFolderIds: [],
-          bookmarkIds: []
-        });
+        expect(folders.getFolder(state, 1)).toEqual(folder1);
+        expect(folders.getFolder(state, 2)).toEqual(folder2);
       });
 
       it("contains no other folders", () => {
@@ -57,20 +58,7 @@ describe("reducers", () => {
       });
 
       it("lists all of the folders as visible", () => {
-        expect(folders.getVisibleFolders(state)).toEqual([
-          {
-            id: 1,
-            name: "Folder 1",
-            childFolderIds: [],
-            bookmarkIds: []
-          },
-          {
-            id: 2,
-            name: "Folder 2",
-            childFolderIds: [],
-            bookmarkIds: []
-          }
-        ]);
+        expect(folders.getVisibleFolders(state)).toEqual([folder1, folder2]);
       });
 
       describe("when a child folder is added to the folder", () => {
@@ -82,29 +70,25 @@ describe("reducers", () => {
           });
         });
 
-        it("should add childFolderId to parent folder", () => {
+        it("should add childFolderId to parent folder and add to orderChildIds", () => {
           expect(folders.getFolder(state, 1)).toEqual({
-            id: 1,
-            name: "Folder 1",
+            ...folder1,
             childFolderIds: [2],
-            bookmarkIds: []
+            orderChildIds: [2]
           });
         });
         it("lists all of the folders as visible", () => {
           expect(folders.getVisibleFolders(state)).toEqual([
             {
-              id: 1,
-              name: "Folder 1",
+              ...folder1,
               childFolderIds: [2],
-              bookmarkIds: []
+              orderChildIds: [2]
             },
-            {
-              id: 2,
-              name: "Folder 2",
-              childFolderIds: [],
-              bookmarkIds: []
-            }
+            folder2
           ]);
+        });
+        test("get child folders test", () => {
+          expect(folders.getChildFolder(state, 1)).toEqual([folder2]);
         });
 
         describe("when deleted folder", () => {
@@ -123,10 +107,9 @@ describe("reducers", () => {
 
           it("should remove child id in parant folder", () => {
             expect(folders.getFolder(state, 1)).toEqual({
-              id: 1,
-              name: "Folder 1",
+              ...folder1,
               childFolderIds: [],
-              bookmarkIds: []
+              orderChildIds: []
             });
           });
 
@@ -147,10 +130,8 @@ describe("reducers", () => {
 
         it("should edit folder name", () => {
           expect(folders.getFolder(state, 1)).toEqual({
-            id: 1,
-            name: "edited folder name",
-            childFolderIds: [],
-            bookmarkIds: []
+            ...folder1,
+            name: "edited folder name"
           });
         });
       });
@@ -166,10 +147,9 @@ describe("reducers", () => {
 
         it("should add bookmark id to folder", () => {
           expect(folders.getFolder(state, 1)).toEqual({
-            id: 1,
-            name: "Folder 1",
-            childFolderIds: [],
-            bookmarkIds: [1]
+            ...folder1,
+            bookmarkIds: [1],
+            orderChildIds: [1]
           });
         });
 
@@ -184,10 +164,9 @@ describe("reducers", () => {
 
           it("should delete bookmark id in folder bookmarkIds", () => {
             expect(folders.getFolder(state, 1)).toEqual({
-              id: 1,
-              name: "Folder 1",
-              childFolderIds: [],
-              bookmarkIds: []
+              ...folder1,
+              bookmarkIds: [],
+              orderChildIds: []
             });
           });
         });

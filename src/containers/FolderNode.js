@@ -13,6 +13,7 @@ const FolderNodeContainer = styled.ul`
   cursor: pointer;
   list-style-type: none;
   padding-inline-start: 15px;
+  margin: 5px 0;
 `;
 
 const FolderContainer = styled.div`

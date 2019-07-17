@@ -2,7 +2,6 @@ import React from "react";
 import styled from "styled-components";
 
 const NavBarContainer = styled.div`
-  flex: 0.1;
   background-color: #8c8280;
 `;
 

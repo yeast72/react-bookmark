@@ -10,6 +10,26 @@ export const getChildFolder = (state, id) => {
   return { bookmarks, folders: childFolder };
 };
 
+export const getBookmarkItemById = (state, id) => {
+  const { folders, bookmarks } = state;
+  const folder = fromFolder.getFolder(folders, id);
+  const bookmark = fromBookmark.getBookmark(bookmarks, id);
+  if (folder) {
+    return { type: "folder", folder };
+  }
+  return { type: "bookmark", bookmark };
+};
+
+export const getBookmarkItemlistById = (state, id) => {
+  const { folders } = state;
+  const folder = fromFolder.getFolder(folders, id);
+  return folder.orderChildIds.reduce((obj, id) => {
+    let item = getBookmarkItemById(state, id);
+    obj[id] = item;
+    return obj;
+  }, {});
+};
+
 export const getBookmarksFromFolderId = (state, id) => {
   const { folders, bookmarks } = state;
   const bookmarkIds = fromFolder.getFolder(folders, id).bookmarkIds;

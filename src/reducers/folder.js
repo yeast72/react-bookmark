@@ -16,7 +16,23 @@ const initialFolder = {
   id: "",
   name: "",
   childFolderIds: [],
-  bookmarkIds: []
+  bookmarkIds: [],
+  orderChildIds: []
+};
+
+const orderChildIds = (state = [], action) => {
+  switch (action.type) {
+    case ADD_FOLDER_CHILD:
+      return [...state, action.childId];
+    case DELETE_FOLDER_CHILD:
+      return state.filter(id => id !== action.childId);
+    case ADD_BOOKMARK_CHILD:
+      return [...state, action.bookmarkId];
+    case DELETE_BOOKMARK_CHILD:
+      return state.filter(id => id != action.bookmarkId);
+    default:
+      return state;
+  }
 };
 
 const childFolderIds = (state = [], action) => {
@@ -51,13 +67,15 @@ const folders = (state = initialFolder, action) => {
     case DELETE_FOLDER_CHILD:
       return {
         ...state,
-        childFolderIds: childFolderIds(state.childFolderIds, action)
+        childFolderIds: childFolderIds(state.childFolderIds, action),
+        orderChildIds: orderChildIds(state.orderChildIds, action)
       };
     case ADD_BOOKMARK_CHILD:
     case DELETE_BOOKMARK_CHILD:
       return {
         ...state,
-        bookmarkIds: bookmarkIds(state.bookmarkIds, action)
+        bookmarkIds: bookmarkIds(state.bookmarkIds, action),
+        orderChildIds: orderChildIds(state.orderChildIds, action)
       };
     case EDIT_FOLDER_NAME:
       return {

@@ -2,18 +2,21 @@
          "id": "0",
          "name": "bookmark bar",
          "childFolderIds": ["1", "2"],
-         "bookmarkIds": ["0", "1"]
+         "bookmarkIds": ["10", "11"],
+         "orderChildIds": ["1", "2", "10", "11"]
      },
      {
          "id": "1",
          "name": "React Folder",
          "childFolderIds": [""],
-         "bookmarkIds": ["0", "1"]
+         "bookmarkIds": ["10", "11"],
+         "orderChildIds": ["10", "11"]
      },
      {
          "id": "2",
          "name": "Vue Folder",
          "childFolderIds": [""],
-         "bookmarkIds": ["0", "1"]
+         "bookmarkIds": ["10", "11"],
+         "orderChildIds": ["10", "11"]
      }
  ]
