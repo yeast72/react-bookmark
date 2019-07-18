@@ -1,27 +1,25 @@
 import React from "react";
 import styled from "styled-components";
-import { Link } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faFolder } from "@fortawesome/free-solid-svg-icons";
 
 const Folder = ({ name, id }) => {
   return (
-    <FolderInfo to={id}>
+    <Container to={id}>
       <FontAwesomeIcon icon={faFolder} />
       <FolderName>{name}</FolderName>
-    </FolderInfo>
+    </Container>
   );
 };
 
 export default Folder;
 
-const FolderName = styled.span`
+const FolderName = styled.div`
+  display: inline;
   margin-left: 10px;
   text-decoration: none;
-  color: black;
 `;
 
-const FolderInfo = styled(Link)`
+const Container = styled.div`
   text-decoration: none;
-  color: black;
 `;

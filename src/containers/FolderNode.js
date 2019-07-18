@@ -1,10 +1,13 @@
 import React, { Component } from "react";
-import { Redirect } from "react-router-dom";
 import { connect } from "react-redux";
 import styled from "styled-components";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faCaretDown, faTrashAlt } from "@fortawesome/free-solid-svg-icons";
+import {
+  faCaretDown,
+  faTrashAlt,
+  faEdit
+} from "@fortawesome/free-solid-svg-icons";
 
 import Folder from "../components/Folder/Folder";
 
@@ -18,15 +21,32 @@ const FolderNodeContainer = styled.ul`
   margin: 5px 0;
 `;
 
-const FolderContainer = styled.div`
+const Container = styled.div`
   cursor: pointer;
-  display: inline;
-  position: relative;
+  margin: 5px 0;
+  display: flex;
+  flex-direction: column;
 `;
 
-const ButtonIcon = styled(FontAwesomeIcon)`
-  margin-inline-end: 10px;
-  margin-inline-start: 5px;
+const FolderContainer = styled.div`
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  position: relative;
+  padding-inline-start: ${props => (props.nodeDepth || 0) * 36}px;
+  /* margin-inline-start: ${props => (props.haveChild ? 0 : 54)}px; */
+  color: ${props => (props.active ? "blue" : "#757575")};
+`;
+
+const StyleButton = styled(FontAwesomeIcon)`
+  display: ${props => (props.hide ? "none !important" : "")};
+  padding: 8px;
+  transition: background-color 50ms linear;
+  border-radius: 4px;
+  color: #757575;
+  :hover {
+    background-color: #c1a594;
+  }
 `;
 
 export class FolderNode extends Component {
@@ -59,51 +79,62 @@ export class FolderNode extends Component {
 
   renderChild = childFolderIds => {
     const { id } = this.props;
+    const { nodeDepth = 0 } = this.props;
     return (
-      <li key={childFolderIds}>
-        <ConnectedFolderNode id={childFolderIds} parentId={id} />
-      </li>
+      <ConnectedFolderNode
+        key={childFolderIds}
+        id={childFolderIds}
+        parentId={id}
+        nodeDepth={nodeDepth + 1}
+      />
     );
   };
 
   render() {
-    const { parentId, childFolderIds, name, id } = this.props;
+    const { id, name, childFolderIds } = this.props.folder;
+    const { selectedFolderId, nodeDepth = 0, parentId } = this.props;
+
     const haveChild = childFolderIds.length;
     const renderOption = (
-      <ButtonIcon onClick={this.handleDeleteFolder} icon={faTrashAlt} />
+      <>
+        <StyleButton onClick={this.handleDeleteFolder} icon={faTrashAlt} />
+        <StyleButton icon={faEdit} />
+      </>
     );
-    const renderToggleFolder = haveChild ? (
+    const renderToggleFolder = (
       <span onClick={this.handleToggleFolder}>
-        <ButtonIcon icon={faCaretDown} />
+        <StyleButton icon={faCaretDown} hide={!haveChild} />
       </span>
-    ) : (
-      ""
     );
 
+    const isActive = id.toString() === selectedFolderId.toString();
+
     return (
-      <FolderNodeContainer onClick={this.handleOnSelectFolder}>
-        <li>
+      <Container>
+        <FolderContainer
+          nodeDepth={nodeDepth}
+          onClick={this.handleOnSelectFolder}
+          active={isActive}
+          haveChild={haveChild}
+        >
           {renderToggleFolder}
-          <FolderContainer>
-            <Folder name={name} id={id} />{" "}
-            {typeof parentId !== "undefined" && renderOption}
-            {this.state.open ? (
-              <FolderNodeContainer>
-                {childFolderIds.map(this.renderChild)}{" "}
-              </FolderNodeContainer>
-            ) : (
-              ""
-            )}
-          </FolderContainer>
-        </li>
-      </FolderNodeContainer>
+          <Folder name={name} id={id} />{" "}
+          {typeof parentId !== "undefined" && renderOption}
+        </FolderContainer>
+        {this.state.open ? (
+          <Container>{childFolderIds.map(this.renderChild)} </Container>
+        ) : (
+          ""
+        )}
+      </Container>
     );
   }
 }
 
-const mapStateToProps = (state, ownProps) => {
-  return state.folders.byId[ownProps.id];
-};
+const mapStateToProps = (state, ownProps) => ({
+  folder: state.folders.byId[ownProps.id],
+  selectedFolderId: state.folders.selectedFolderId
+});
 
 const mapDispatchToProps = dispatch => {
   return {

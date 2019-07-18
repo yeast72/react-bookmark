@@ -10,7 +10,7 @@ const FoldersListContainer = styled.div`
 `;
 
 const FoldersList = props => {
-  const { title, children } = props;
+  const { children } = props;
   return (
     <FoldersListContainer>
       <div>{children}</div>

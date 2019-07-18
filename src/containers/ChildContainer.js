@@ -2,7 +2,13 @@ import React, { Component } from "react";
 import styled from "styled-components";
 import { connect } from "react-redux";
 import { getBookmarkItemlistById } from "../reducers";
-import { selectFolder } from "../actions";
+import {
+  selectFolder,
+  deleteFolder,
+  deleteFolderChild,
+  editBookmark,
+  editFolderName
+} from "../actions";
 
 import BookmarkItem from "../components/Bookmark/BookmarkItem";
 import FolderItem from "../components/Folder/FolderItem";

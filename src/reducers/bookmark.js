@@ -56,7 +56,7 @@ const visibleIds = (state = [], action) => {
     case CREATE_BOOKMARK:
       return [...state, action.bookmark.id];
     case DELETE_BOOKMARK:
-      return state.filter(id => id !== bookmarkId);
+      return state.filter(id => id.toString() !== bookmarkId.toString());
     default:
       return state;
   }
