@@ -16,6 +16,11 @@ export const selectFolder = folderId => ({
   folderId
 });
 
+export const selectBookmark = id => ({
+  type: types.SELECT_BOOKMARK,
+  id
+});
+
 export const getAllFolders = () => dispatch => {
   bookmarkApp.getFolders(folders => {
     dispatch(receiveFolders(folders));

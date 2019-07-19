@@ -14,13 +14,6 @@ import Folder from "../components/Folder/Folder";
 import history from "../history";
 import { selectFolder, deleteFolder, deleteFolderChild } from "../actions";
 
-const FolderNodeContainer = styled.ul`
-  cursor: pointer;
-  list-style-type: none;
-  padding-inline-start: 15px;
-  margin: 5px 0;
-`;
-
 const Container = styled.div`
   cursor: pointer;
   margin: 5px 0;
@@ -39,7 +32,6 @@ const FolderContainer = styled.div`
 `;
 
 const StyleButton = styled(FontAwesomeIcon)`
-  display: ${props => (props.hide ? "none !important" : "")};
   padding: 8px;
   transition: background-color 50ms linear;
   border-radius: 4px;
@@ -64,8 +56,20 @@ export class FolderNode extends Component {
   }
 
   handleDeleteFolder(e) {
-    const { id, onDeleteFolder, onDeleteFolderChild, parentId } = this.props;
+    const {
+      id,
+      onDeleteFolder,
+      onDeleteFolderChild,
+      onSelectFolder,
+      parentId,
+      selectedFolderId
+    } = this.props;
     e.stopPropagation();
+
+    if (id.toString() === selectedFolderId.toString()) {
+      onSelectFolder(parentId);
+      history.push(`${parentId}`);
+    }
     onDeleteFolderChild(parentId, id);
     onDeleteFolder(id);
   }
@@ -103,7 +107,7 @@ export class FolderNode extends Component {
     );
     const renderToggleFolder = (
       <span onClick={this.handleToggleFolder}>
-        <StyleButton icon={faCaretDown} hide={!haveChild} />
+        <StyleButton icon={faCaretDown} />
       </span>
     );
 
@@ -117,8 +121,8 @@ export class FolderNode extends Component {
           active={isActive}
           haveChild={haveChild}
         >
-          {renderToggleFolder}
-          <Folder name={name} id={id} />{" "}
+          {haveChild ? renderToggleFolder : ""}
+          <Folder name={name} id={id} />
           {typeof parentId !== "undefined" && renderOption}
         </FolderContainer>
         {this.state.open ? (

@@ -1,14 +1,9 @@
 import React, { Component } from "react";
 import styled from "styled-components";
 import { connect } from "react-redux";
+import history from "../history";
 import { getBookmarkItemlistById } from "../reducers";
-import {
-  selectFolder,
-  deleteFolder,
-  deleteFolderChild,
-  editBookmark,
-  editFolderName
-} from "../actions";
+import { selectFolder, selectBookmark } from "../actions";
 
 import BookmarkItem from "../components/Bookmark/BookmarkItem";
 import FolderItem from "../components/Folder/FolderItem";
@@ -23,31 +18,69 @@ const Title = styled.h1`
 class ChildContainer extends Component {
   constructor(props) {
     super(props);
+    this.handleDoubleClickBookmark = this.handleDoubleClickBookmark.bind(this);
+    this.handleDoubleClickFolder = this.handleDoubleClickFolder.bind(this);
     this.handleOnItemClick = this.handleOnItemClick.bind(this);
+    this.preventAction = false;
+    this.delay = 50;
   }
 
-  handleOnItemClick(e) {
-    e.preventDefault();
+  handleOnItemClick(id) {
+    const { onSelectBookmark } = this.props;
+    this.timer = setTimeout(() => {
+      if (!this.preventAction) {
+        onSelectBookmark(id);
+      }
+      this.preventAction = false;
+    }, this.delay);
+  }
+
+  handleDoubleClickFolder(id) {
+    clearTimeout(this.timer);
+    this.preventAction = true;
+
+    const { onSelectFolder } = this.props;
+
+    onSelectFolder(id);
+    history.push(`${id}`);
+  }
+
+  handleDoubleClickBookmark(url) {
+    clearTimeout(this.timer);
+    this.preventAction = true;
+    window.open(url, "_blank");
   }
 
   render() {
-    const { bookmarkList, folder } = this.props;
+    const { bookmarkList, folder, activeBookmarkId } = this.props;
     const { orderChildIds } = folder;
-
+    const isActive = id => {
+      return id.toString() === activeBookmarkId.toString();
+    };
     const renderChildFolder = folder => {
+      const id = folder.id;
       return (
-        <ChildItem key={folder.id}>
-          <FolderItem
-            onSelectFolder={() => selectFolder(folder.id)}
-            {...folder}
-          />
+        <ChildItem
+          key={id}
+          onClick={this.handleOnItemClick}
+          OnItemClick={() => this.handleOnItemClick(id)}
+          OnOpenBookmark={() => this.handleDoubleClickFolder(id)}
+          active={isActive(id)}
+        >
+          <FolderItem {...folder} />
         </ChildItem>
       );
     };
 
     const renderChildBookmark = bookmark => {
+      const { id, url } = bookmark;
       return (
-        <ChildItem key={bookmark.id}>
+        <ChildItem
+          key={id}
+          OnItemClick={e => this.handleOnItemClick(id, e)}
+          OnOpenBookmark={e => this.handleDoubleClickBookmark(url, e)}
+          active={isActive(id)}
+        >
           <BookmarkItem {...bookmark} />
         </ChildItem>
       );
@@ -81,11 +114,22 @@ const mapStateToProps = (state, ownProps) => {
     ownProps.match.params.id === undefined ? "0" : ownProps.match.params.id;
   return {
     folder: state.folders.byId[id],
-    bookmarkList: getBookmarkItemlistById(state, id)
+    bookmarkList: getBookmarkItemlistById(state, id),
+    activeBookmarkId: state.activeBookmarkId
   };
 };
 
+const mapDispatchToProps = dispatch => {
+  return {
+    onSelectFolder: id => {
+      dispatch(selectFolder(id));
+    },
+    onSelectBookmark: id => {
+      dispatch(selectBookmark(id));
+    }
+  };
+};
 export default connect(
   mapStateToProps,
-  { selectFolder }
+  mapDispatchToProps
 )(ChildContainer);

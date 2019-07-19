@@ -1,4 +1,5 @@
 import React from "react";
+import PropTypes from "prop-types";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEdit, faTrashAlt } from "@fortawesome/free-solid-svg-icons";
 import styled from "styled-components";
@@ -12,7 +13,7 @@ const Container = styled.li`
   padding-inline-start: 20px;
   align-items: center;
   box-sizing: border-box;
-  background: ${props => (props.active ? "#8c8280" : "")};
+  background: ${props => (props.active ? "#bfada9" : "")};
   list-style-type: none;
   text-decoration: none;
   user-select: none;
@@ -37,16 +38,27 @@ const ChildContainer = styled.div`
 `;
 
 const ChildItem = props => {
-  const { type, active } = props;
+  const { type, active, OnItemClick, OnOpenBookmark } = props;
   return (
-    <Container>
-      <ChildContainer active={active}>{props.children}</ChildContainer>
+    <Container
+      active={active}
+      onClick={OnItemClick}
+      onDoubleClick={OnOpenBookmark}
+    >
+      <ChildContainer>{props.children}</ChildContainer>
       <MenuButtonContainer>
         <StyledButton icon={faEdit} />
         <StyledButton icon={faTrashAlt} />
       </MenuButtonContainer>
     </Container>
   );
+};
+
+ChildItem.propsTypes = {
+  type: PropTypes.string,
+  active: PropTypes.bool,
+  OnItemClick: PropTypes.func,
+  OnOpenBookmark: PropTypes.func
 };
 
 export default ChildItem;
