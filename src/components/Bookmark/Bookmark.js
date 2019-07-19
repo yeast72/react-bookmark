@@ -19,7 +19,7 @@ const BookmarkInfo = styled.div`
   color: black;
 `;
 
-const BookmarkName = styled.a`
+const BookmarkName = styled.span`
   text-decoration: none;
   color: black;
   margin-left: 10px;

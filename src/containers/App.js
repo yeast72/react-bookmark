@@ -17,7 +17,9 @@ import {
   toggleAddBookmarkModal,
   toggleAddFolderModal,
   createFolder,
-  addFolder
+  addFolder,
+  selectBookmark,
+  selectFolder
 } from "../actions";
 
 const AppContainer = styled.div`
@@ -93,6 +95,7 @@ class App extends Component {
 
   render() {
     const { toggleAddBookmarkModal, toggleAddFolderModal } = this.props;
+    const { selectBookmark } = this.props;
     const {
       isAddBookmarkModalOpened,
       isAddFolderModalOpened
@@ -125,7 +128,7 @@ class App extends Component {
             <SideBar>
               <FolderContainer />
             </SideBar>
-            <BookmarkListContainer>
+            <BookmarkListContainer onClick={() => selectBookmark("")}>
               {renderAddFolderModel}
               {renderAddBookmarkModel}
               <button onClick={toggleAddFolderModal}>Add Folder</button>
@@ -155,6 +158,7 @@ export default connect(
     createFolder,
     addFolder,
     toggleAddBookmarkModal,
-    toggleAddFolderModal
+    toggleAddFolderModal,
+    selectBookmark
   }
 )(App);

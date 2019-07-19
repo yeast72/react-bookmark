@@ -25,7 +25,8 @@ class ChildContainer extends Component {
     this.delay = 50;
   }
 
-  handleOnItemClick(id) {
+  handleOnItemClick(id, e) {
+    e.stopPropagation();
     const { onSelectBookmark } = this.props;
     this.timer = setTimeout(() => {
       if (!this.preventAction) {
@@ -35,7 +36,8 @@ class ChildContainer extends Component {
     }, this.delay);
   }
 
-  handleDoubleClickFolder(id) {
+  handleDoubleClickFolder(id, e) {
+    e.stopPropagation();
     clearTimeout(this.timer);
     this.preventAction = true;
 
@@ -45,7 +47,8 @@ class ChildContainer extends Component {
     history.push(`${id}`);
   }
 
-  handleDoubleClickBookmark(url) {
+  handleDoubleClickBookmark(url, e) {
+    e.stopPropagation();
     clearTimeout(this.timer);
     this.preventAction = true;
     window.open(url, "_blank");
@@ -63,8 +66,8 @@ class ChildContainer extends Component {
         <ChildItem
           key={id}
           onClick={this.handleOnItemClick}
-          OnItemClick={() => this.handleOnItemClick(id)}
-          OnOpenBookmark={() => this.handleDoubleClickFolder(id)}
+          OnItemClick={e => this.handleOnItemClick(id, e)}
+          OnOpenBookmark={e => this.handleDoubleClickFolder(id, e)}
           active={isActive(id)}
         >
           <FolderItem {...folder} />
