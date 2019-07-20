@@ -3,10 +3,19 @@ import styled from "styled-components";
 import { connect } from "react-redux";
 import history from "../history";
 import { getBookmarkItemlistById } from "../reducers";
-import { selectFolder, selectBookmark } from "../actions";
+import {
+  selectFolder,
+  selectBookmark,
+  editBookmark,
+  editFolderName,
+  toggleUpdateBookmarkModal,
+  toggleUpdateFolderModal
+} from "../actions";
 
 import BookmarkItem from "../components/Bookmark/BookmarkItem";
 import FolderItem from "../components/Folder/FolderItem";
+import ModalUpdateBookmark from "../components/Modal/ModalUpdateBookmark";
+import ModalUpdateFolder from "../components/Modal/ModalUpdateFolder";
 
 import ChildsList from "../components/Child/ChildsList";
 import ChildItem from "../components/Child/ChildItem";
@@ -21,12 +30,49 @@ class ChildContainer extends Component {
     this.handleDoubleClickBookmark = this.handleDoubleClickBookmark.bind(this);
     this.handleDoubleClickFolder = this.handleDoubleClickFolder.bind(this);
     this.handleOnItemClick = this.handleOnItemClick.bind(this);
+    this.handleOpenUpdateBookmarkModal = this.handleOpenUpdateBookmarkModal.bind(
+      this
+    );
+    this.handleOpenUpdateFolderModal = this.handleOpenUpdateFolderModal.bind(
+      this
+    );
+    this.handleUpdateBookmark = this.handleUpdateBookmark.bind(this);
+    this.handleUpdateFolder = this.handleUpdateFolder.bind(this);
     this.preventAction = false;
     this.delay = 50;
   }
 
-  handleOnItemClick(id, e) {
+  handleOpenUpdateFolderModal(id, e) {
+    const { onToggleUpdateFolder, onSelectBookmark } = this.props;
     e.stopPropagation();
+    onSelectBookmark(id);
+    onToggleUpdateFolder();
+  }
+
+  handleOpenUpdateBookmarkModal(id, e) {
+    const { onToggleUpdateBookmark, onSelectBookmark } = this.props;
+    e.stopPropagation();
+    onSelectBookmark(id);
+    onToggleUpdateBookmark();
+  }
+
+  handleUpdateBookmark(name, url) {
+    const {
+      onToggleUpdateBookmark,
+      onEditBookmark,
+      activeBookmarkId
+    } = this.props;
+    onEditBookmark(activeBookmarkId, name, url);
+    onToggleUpdateBookmark();
+  }
+
+  handleUpdateFolder(name) {
+    const { onToggleUpdateFolder, onEditFolder, activeBookmarkId } = this.props;
+    onEditFolder(activeBookmarkId, name);
+    onToggleUpdateFolder();
+  }
+
+  handleOnItemClick(id, e) {
     const { onSelectBookmark } = this.props;
     this.timer = setTimeout(() => {
       if (!this.preventAction) {
@@ -34,17 +80,17 @@ class ChildContainer extends Component {
       }
       this.preventAction = false;
     }, this.delay);
+    e.stopPropagation();
   }
 
   handleDoubleClickFolder(id, e) {
-    e.stopPropagation();
-    clearTimeout(this.timer);
-    this.preventAction = true;
-
     const { onSelectFolder } = this.props;
-
     onSelectFolder(id);
     history.push(`${id}`);
+
+    this.preventAction = true;
+    clearTimeout(this.timer);
+    e.stopPropagation();
   }
 
   handleDoubleClickBookmark(url, e) {
@@ -60,14 +106,56 @@ class ChildContainer extends Component {
     const isActive = id => {
       return id.toString() === activeBookmarkId.toString();
     };
+
+    const renderUpdateBookmarkModal = () => {
+      const {
+        isUpdateBookmarkModalOpened,
+        onToggleUpdateBookmark,
+        bookmarkList,
+        activeBookmarkId,
+        onEditBookmark
+      } = this.props;
+      return isUpdateBookmarkModalOpened ? (
+        <ModalUpdateBookmark
+          onCancel={onToggleUpdateBookmark}
+          onSave={this.handleUpdateBookmark}
+          bookmark={bookmarkList[activeBookmarkId].bookmark}
+        />
+      ) : (
+        ""
+      );
+    };
+
+    const renderUpdateFolderModal = () => {
+      const {
+        isUpdateFolderModalOpened,
+        onToggleUpdateFolder,
+        bookmarkList,
+        activeBookmarkId,
+        onEditFolder
+      } = this.props;
+      return isUpdateFolderModalOpened ? (
+        <ModalUpdateFolder
+          onCancel={onToggleUpdateFolder}
+          onSave={this.handleUpdateFolder}
+          folder={bookmarkList[activeBookmarkId].folder}
+        />
+      ) : (
+        ""
+      );
+    };
+
     const renderChildFolder = folder => {
       const id = folder.id;
+      const { onToggleUpdateFolder } = this.props;
       return (
         <ChildItem
           key={id}
+          type={"folder"}
+          onToggleUpdateModal={e => this.handleOpenUpdateFolderModal(id, e)}
           onClick={this.handleOnItemClick}
-          OnItemClick={e => this.handleOnItemClick(id, e)}
-          OnOpenBookmark={e => this.handleDoubleClickFolder(id, e)}
+          onItemClick={e => this.handleOnItemClick(id, e)}
+          onOpenBookmark={e => this.handleDoubleClickFolder(id, e)}
           active={isActive(id)}
         >
           <FolderItem {...folder} />
@@ -77,11 +165,14 @@ class ChildContainer extends Component {
 
     const renderChildBookmark = bookmark => {
       const { id, url } = bookmark;
+      const { onToggleUpdateBookmark } = this.props;
       return (
         <ChildItem
           key={id}
-          OnItemClick={e => this.handleOnItemClick(id, e)}
-          OnOpenBookmark={e => this.handleDoubleClickBookmark(url, e)}
+          type={"bookmark"}
+          onToggleUpdateModal={e => this.handleOpenUpdateBookmarkModal(id, e)}
+          onItemClick={e => this.handleOnItemClick(id, e)}
+          onOpenBookmark={e => this.handleDoubleClickBookmark(url, e)}
           active={isActive(id)}
         >
           <BookmarkItem {...bookmark} />
@@ -102,6 +193,9 @@ class ChildContainer extends Component {
 
     return (
       <>
+        {renderUpdateFolderModal()}
+        {renderUpdateBookmarkModal()}
+
         {orderChildIds.length ? (
           <ChildsList>{renderChild}</ChildsList>
         ) : (
@@ -118,7 +212,9 @@ const mapStateToProps = (state, ownProps) => {
   return {
     folder: state.folders.byId[id],
     bookmarkList: getBookmarkItemlistById(state, id),
-    activeBookmarkId: state.activeBookmarkId
+    activeBookmarkId: state.activeBookmarkId,
+    isUpdateBookmarkModalOpened: state.modals.isUpdateBookmarkModalOpened,
+    isUpdateFolderModalOpened: state.modals.isUpdateFolderModalOpened
   };
 };
 
@@ -129,6 +225,18 @@ const mapDispatchToProps = dispatch => {
     },
     onSelectBookmark: id => {
       dispatch(selectBookmark(id));
+    },
+    onToggleUpdateBookmark: () => {
+      dispatch(toggleUpdateBookmarkModal());
+    },
+    onToggleUpdateFolder: () => {
+      dispatch(toggleUpdateFolderModal());
+    },
+    onEditBookmark: (bookmarkId, name, url) => {
+      dispatch(editBookmark(bookmarkId, name, url));
+    },
+    onEditFolder: (folderId, name) => {
+      dispatch(editFolderName(folderId, name));
     }
   };
 };

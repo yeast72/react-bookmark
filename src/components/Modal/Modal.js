@@ -32,7 +32,13 @@ class Modal extends React.Component {
   constructor(props) {
     super(props);
     this.el = document.createElement("div");
+    this.handleClickOutsideBox = this.handleClickOutsideBox.bind(this);
   }
+
+  handleClickOutsideBox(e) {
+    e.stopPropagation();
+  }
+
   componentDidMount() {
     modalRoot.appendChild(this.el);
   }
@@ -44,7 +50,7 @@ class Modal extends React.Component {
   render() {
     const { title } = this.props;
     const element = (
-      <ModalContainer>
+      <ModalContainer onClick={this.handleClickOutsideBox}>
         <ModalBox>
           <ModalContent>
             <h1>{title}</h1>

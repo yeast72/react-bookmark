@@ -38,16 +38,22 @@ const ChildContainer = styled.div`
 `;
 
 const ChildItem = props => {
-  const { type, active, OnItemClick, OnOpenBookmark } = props;
+  const {
+    type,
+    active,
+    onItemClick,
+    onOpenBookmark,
+    onToggleUpdateModal
+  } = props;
   return (
     <Container
       active={active}
-      onClick={OnItemClick}
-      onDoubleClick={OnOpenBookmark}
+      onClick={onItemClick}
+      onDoubleClick={onOpenBookmark}
     >
       <ChildContainer>{props.children}</ChildContainer>
       <MenuButtonContainer>
-        <StyledButton icon={faEdit} />
+        <StyledButton onClick={onToggleUpdateModal} icon={faEdit} />
         <StyledButton icon={faTrashAlt} />
       </MenuButtonContainer>
     </Container>
@@ -57,8 +63,9 @@ const ChildItem = props => {
 ChildItem.propsTypes = {
   type: PropTypes.string,
   active: PropTypes.bool,
-  OnItemClick: PropTypes.func,
-  OnOpenBookmark: PropTypes.func
+  onItemClick: PropTypes.func,
+  onOpenBookmark: PropTypes.func,
+  onToggleUpdateModal: PropTypes.func
 };
 
 export default ChildItem;
