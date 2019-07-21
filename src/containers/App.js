@@ -2,24 +2,20 @@ import React, { Component } from "react";
 import { Router, Route } from "react-router-dom";
 import styled from "styled-components";
 import { connect } from "react-redux";
-import uuidv1 from "uuid/v1";
 
 import FolderContainer from "./FolderContainer";
 import ChildContainer from "./ChildContainer";
 import Navbar from "../components/Navbar";
-import ModalAddBookmark from "../components/Modal/ModalAddBookmark";
-import ModalAddFolder from "../components/Modal/ModalAddFolder";
+import ModalRoot from "../components/Modal/ModalRoot";
 
 import history from "../history";
 import {
   addBookmark,
   createBookmark,
-  toggleAddBookmarkModal,
-  toggleAddFolderModal,
+  showModal,
   createFolder,
   addFolder,
-  selectBookmark,
-  selectFolder
+  selectBookmark
 } from "../actions";
 
 const AppContainer = styled.div`
@@ -62,77 +58,41 @@ class App extends Component {
       isAddBookmarkModelOpen: false,
       isAddFolderModalOpen: false
     };
-    this.handleAddBookmark = this.handleAddBookmark.bind(this);
-    this.handleAddFolder = this.handleAddFolder.bind(this);
+    this.handleAddBookmarkButton = this.handleAddBookmarkButton.bind(this);
+    this.handleAddFolderButton = this.handleAddFolderButton.bind(this);
   }
 
-  handleAddFolder(name) {
-    const { toggleAddFolderModal } = this.props;
-    toggleAddFolderModal();
-    const newId = uuidv1();
-    const folder = {
-      id: newId,
-      name,
-      childFolderIds: [],
-      bookmarkIds: []
-    };
-    this.props.createFolder(folder);
-    this.props.addFolder(folder.id, this.props.selectedFolderId);
+  handleAddBookmarkButton(e) {
+    const { showModal } = this.props;
+    showModal("ADD_BOOKMARK", "");
+    e.stopPropagation();
   }
 
-  handleAddBookmark(name, url) {
-    const { toggleAddBookmarkModal } = this.props;
-    toggleAddBookmarkModal();
-    const newId = uuidv1();
-    const bookmark = {
-      id: newId,
-      name,
-      url
-    };
-    this.props.createBookmark(bookmark);
-    this.props.addBookmark(bookmark.id, this.props.selectedFolderId);
+  handleAddFolderButton(e) {
+    const { showModal } = this.props;
+    showModal("ADD_FOLDER", "");
+    e.stopPropagation();
   }
 
   render() {
-    const { toggleAddBookmarkModal, toggleAddFolderModal } = this.props;
     const { selectBookmark } = this.props;
-    const {
-      isAddBookmarkModalOpened,
-      isAddFolderModalOpened
-    } = this.props.modals;
-
-    const addFolderModal = (
-      <ModalAddFolder
-        onCancel={toggleAddFolderModal}
-        onAddFolder={this.handleAddFolder}
-      />
-    );
-
-    const addBookmarkModal = (
-      <ModalAddBookmark
-        onCancel={toggleAddBookmarkModal}
-        onAddBookmark={this.handleAddBookmark}
-      />
-    );
-
-    const renderAddFolderModel = isAddFolderModalOpened ? addFolderModal : "";
-    const renderAddBookmarkModel = isAddBookmarkModalOpened
-      ? addBookmarkModal
-      : "";
 
     return (
       <AppContainer>
         <Navbar />
         <MainContainer>
           <Router history={history}>
+            <ModalRoot />
             <SideBar>
               <FolderContainer />
             </SideBar>
             <BookmarkListContainer onClick={() => selectBookmark("")}>
-              {renderAddFolderModel}
-              {renderAddBookmarkModel}
-              <button onClick={toggleAddFolderModal}>Add Folder</button>
-              <button onClick={toggleAddBookmarkModal}>Add Bookmark</button>
+              <button onClick={e => this.handleAddFolderButton(e)}>
+                Add Folder
+              </button>
+              <button onClick={e => this.handleAddBookmarkButton(e)}>
+                Add Bookmark
+              </button>
               <Route exact path="/" component={ChildContainer} />
               <Route path="/:id" component={ChildContainer} />
             </BookmarkListContainer>
@@ -146,7 +106,7 @@ class App extends Component {
 const mapStateToProps = state => {
   return {
     selectedFolderId: state.folders.selectedFolderId,
-    modals: state.modals
+    modal: state.modal
   };
 };
 
@@ -157,8 +117,7 @@ export default connect(
     createBookmark,
     createFolder,
     addFolder,
-    toggleAddBookmarkModal,
-    toggleAddFolderModal,
+    showModal,
     selectBookmark
   }
 )(App);

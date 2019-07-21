@@ -1,7 +1,7 @@
 import { combineReducers } from "redux";
 import folders, * as fromFolder from "./folder";
 import bookmarks, * as fromBookmark from "./bookmark";
-import modals from "./modal";
+import modal from "./modal";
 import * as types from "../constant/actionTypes";
 
 export const getChildFolder = (state, id) => {
@@ -54,6 +54,6 @@ const activeBookmarkId = (state = "", action) => {
 export default combineReducers({
   folders,
   bookmarks,
-  modals,
+  modal,
   activeBookmarkId
 });

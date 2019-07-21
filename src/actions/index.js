@@ -1,6 +1,18 @@
 import * as types from "../constant/actionTypes";
 import bookmarkApp from "../data/bookmarkApp";
 
+export const getAllFolders = () => dispatch => {
+  bookmarkApp.getFolders(folders => {
+    dispatch(receiveFolders(folders));
+  });
+};
+
+export const getAllBookmarks = () => dispatch => {
+  bookmarkApp.getBookmarks(bookmarks => {
+    dispatch(receiveBookmarks(bookmarks));
+  });
+};
+
 const receiveFolders = folders => ({
   type: types.RECEIVE_FOLDERS,
   folders
@@ -20,18 +32,6 @@ export const selectBookmark = id => ({
   type: types.SELECT_BOOKMARK,
   id
 });
-
-export const getAllFolders = () => dispatch => {
-  bookmarkApp.getFolders(folders => {
-    dispatch(receiveFolders(folders));
-  });
-};
-
-export const getAllBookmarks = () => dispatch => {
-  bookmarkApp.getBookmarks(bookmarks => {
-    dispatch(receiveBookmarks(bookmarks));
-  });
-};
 
 export const createBookmark = bookmark => ({
   type: types.CREATE_BOOKMARK,
@@ -55,10 +55,9 @@ export const addFolder = (childId, folderId) => ({
   folderId: folderId
 });
 
-export const deleteBookmarkChild = (bookmarkId, folderId) => ({
-  type: types.DELETE_BOOKMARK_CHILD,
-  bookmarkId: bookmarkId,
-  folderId: folderId
+export const deleteBookmark = bookmarkId => ({
+  type: types.DELETE_BOOKMARK,
+  bookmarkId: bookmarkId
 });
 
 export const deleteFolder = folderId => ({
@@ -66,10 +65,16 @@ export const deleteFolder = folderId => ({
   folderId: folderId
 });
 
-export const deleteFolderChild = (folderId, childId) => ({
+export const deleteFolderChild = (childId, folderId) => ({
   type: types.DELETE_FOLDER_CHILD,
-  folderId: folderId,
-  childId: childId
+  childId: childId,
+  folderId: folderId
+});
+
+export const deleteBookmarkChild = (bookmarkId, folderId) => ({
+  type: types.DELETE_BOOKMARK_CHILD,
+  bookmarkId: bookmarkId,
+  folderId: folderId
 });
 
 export const editFolderName = (folderId, name) => ({
@@ -85,18 +90,12 @@ export const editBookmark = (bookmarkId, name, url) => ({
   url: url
 });
 
-export const toggleAddFolderModal = () => ({
-  type: types.TOGGLE_ADD_FOLDER_MODAL
+export const showModal = (modalType, modalProps) => ({
+  type: types.SHOW_MODAL,
+  modalType: modalType,
+  modalProps: modalProps
 });
 
-export const toggleAddBookmarkModal = () => ({
-  type: types.TOGGLE_ADD_BOOKMARK_MODAL
-});
-
-export const toggleUpdateBookmarkModal = () => ({
-  type: types.TOGGLE_UPDATE_BOOKMARK_MODAL
-});
-
-export const toggleUpdateFolderModal = () => ({
-  type: types.TOGGLE_UPDATE_FOLDER_MODAL
+export const hideModal = () => ({
+  type: types.HIDE_MODAL
 });

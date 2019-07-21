@@ -1,7 +1,11 @@
 import React, { Component } from "react";
+import { connect } from "react-redux";
+import uuidv1 from "uuid/v1";
+import { createFolder, addFolder, hideModal } from "../../actions";
+
 import Modal from "./Modal";
 
-export default class ModalAddFolder extends Component {
+class AddFolderModal extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -16,7 +20,16 @@ export default class ModalAddFolder extends Component {
   }
 
   handleSave() {
-    this.props.onAddFolder(this.state.name);
+    const { hideModal, createFolder, addFolder, selectedFolderId } = this.props;
+
+    const newId = uuidv1();
+    const folder = {
+      id: newId,
+      name: this.state.name
+    };
+    createFolder(folder);
+    addFolder(folder.id, selectedFolderId);
+    hideModal();
   }
 
   render() {
@@ -38,3 +51,12 @@ export default class ModalAddFolder extends Component {
     );
   }
 }
+
+const mapStateToProps = state => {
+  return { selectedFolderId: state.folders.selectedFolderId };
+};
+
+export default connect(
+  mapStateToProps,
+  { hideModal, createFolder, addFolder }
+)(AddFolderModal);

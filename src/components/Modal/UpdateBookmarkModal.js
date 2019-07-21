@@ -1,8 +1,11 @@
 import React, { Component } from "react";
+import { connect } from "react-redux";
 import PropTypes from "prop-types";
+
+import { hideModal, editBookmark } from "../../actions";
 import Modal from "./Modal";
 
-class ModalUpdateBookmark extends Component {
+class UpdateBookmarkModal extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -18,11 +21,13 @@ class ModalUpdateBookmark extends Component {
   }
 
   handleSave() {
-    this.props.onSave(this.state.name, this.state.url);
+    const { hideModal, editBookmark, bookmark } = this.props;
+    hideModal();
+    editBookmark(bookmark.id, this.state.name, this.state.url);
   }
 
   render() {
-    const { onCancel } = this.props;
+    const { hideModal } = this.props;
     return (
       <Modal title="Edit bookmark">
         <div>
@@ -47,19 +52,24 @@ class ModalUpdateBookmark extends Component {
         </div>
 
         <button onClick={this.handleSave}>Save</button>
-        <button onClick={onCancel}>Cancel</button>
+        <button onClick={hideModal}>Cancel</button>
       </Modal>
     );
   }
 }
 
-ModalUpdateBookmark.propTypes = {
+UpdateBookmarkModal.propTypes = {
   bookmark: PropTypes.shape({
     name: PropTypes.string,
     url: PropTypes.string
-  }).isRequired,
-  onCancel: PropTypes.func.isRequired,
-  onSave: PropTypes.func.isRequired
+  }).isRequired
 };
 
-export default ModalUpdateBookmark;
+const mapStateToProps = (state, ownProps) => {
+  return { bookmark: state.bookmarks.byId[ownProps.id] };
+};
+
+export default connect(
+  mapStateToProps,
+  { hideModal, editBookmark }
+)(UpdateBookmarkModal);

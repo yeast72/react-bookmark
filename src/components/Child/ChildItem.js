@@ -43,7 +43,8 @@ const ChildItem = props => {
     active,
     onItemClick,
     onOpenBookmark,
-    onToggleUpdateModal
+    onToggleUpdateModal,
+    onDelete
   } = props;
   return (
     <Container
@@ -54,7 +55,7 @@ const ChildItem = props => {
       <ChildContainer>{props.children}</ChildContainer>
       <MenuButtonContainer>
         <StyledButton onClick={onToggleUpdateModal} icon={faEdit} />
-        <StyledButton icon={faTrashAlt} />
+        <StyledButton onClick={onDelete} icon={faTrashAlt} />
       </MenuButtonContainer>
     </Container>
   );
@@ -65,7 +66,8 @@ ChildItem.propsTypes = {
   active: PropTypes.bool,
   onItemClick: PropTypes.func,
   onOpenBookmark: PropTypes.func,
-  onToggleUpdateModal: PropTypes.func
+  onToggleUpdateModal: PropTypes.func,
+  onDelete: PropTypes.func.isRequired
 };
 
 export default ChildItem;

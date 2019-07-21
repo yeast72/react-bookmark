@@ -6,16 +6,15 @@ import { getBookmarkItemlistById } from "../reducers";
 import {
   selectFolder,
   selectBookmark,
-  editBookmark,
-  editFolderName,
-  toggleUpdateBookmarkModal,
-  toggleUpdateFolderModal
+  deleteFolder,
+  deleteBookmark,
+  deleteFolderChild,
+  deleteBookmarkChild,
+  showModal
 } from "../actions";
 
 import BookmarkItem from "../components/Bookmark/BookmarkItem";
 import FolderItem from "../components/Folder/FolderItem";
-import ModalUpdateBookmark from "../components/Modal/ModalUpdateBookmark";
-import ModalUpdateFolder from "../components/Modal/ModalUpdateFolder";
 
 import ChildsList from "../components/Child/ChildsList";
 import ChildItem from "../components/Child/ChildItem";
@@ -36,40 +35,18 @@ class ChildContainer extends Component {
     this.handleOpenUpdateFolderModal = this.handleOpenUpdateFolderModal.bind(
       this
     );
-    this.handleUpdateBookmark = this.handleUpdateBookmark.bind(this);
-    this.handleUpdateFolder = this.handleUpdateFolder.bind(this);
     this.preventAction = false;
     this.delay = 50;
   }
 
-  handleOpenUpdateFolderModal(id, e) {
-    const { onToggleUpdateFolder, onSelectBookmark } = this.props;
-    e.stopPropagation();
-    onSelectBookmark(id);
-    onToggleUpdateFolder();
+  handleOpenUpdateFolderModal(id) {
+    const { onShowModal } = this.props;
+    onShowModal("UPDATE_FOLDER", { id: id });
   }
 
-  handleOpenUpdateBookmarkModal(id, e) {
-    const { onToggleUpdateBookmark, onSelectBookmark } = this.props;
-    e.stopPropagation();
-    onSelectBookmark(id);
-    onToggleUpdateBookmark();
-  }
-
-  handleUpdateBookmark(name, url) {
-    const {
-      onToggleUpdateBookmark,
-      onEditBookmark,
-      activeBookmarkId
-    } = this.props;
-    onEditBookmark(activeBookmarkId, name, url);
-    onToggleUpdateBookmark();
-  }
-
-  handleUpdateFolder(name) {
-    const { onToggleUpdateFolder, onEditFolder, activeBookmarkId } = this.props;
-    onEditFolder(activeBookmarkId, name);
-    onToggleUpdateFolder();
+  handleOpenUpdateBookmarkModal(id) {
+    const { onShowModal } = this.props;
+    onShowModal("UPDATE_BOOKMARK", { id: id });
   }
 
   handleOnItemClick(id, e) {
@@ -101,61 +78,30 @@ class ChildContainer extends Component {
   }
 
   render() {
-    const { bookmarkList, folder, activeBookmarkId } = this.props;
+    const {
+      bookmarkList,
+      folder,
+      activeBookmarkId,
+      onDeleteBookmark,
+      onDeleteFolder
+    } = this.props;
     const { orderChildIds } = folder;
     const isActive = id => {
       return id.toString() === activeBookmarkId.toString();
     };
 
-    const renderUpdateBookmarkModal = () => {
-      const {
-        isUpdateBookmarkModalOpened,
-        onToggleUpdateBookmark,
-        bookmarkList,
-        activeBookmarkId,
-        onEditBookmark
-      } = this.props;
-      return isUpdateBookmarkModalOpened ? (
-        <ModalUpdateBookmark
-          onCancel={onToggleUpdateBookmark}
-          onSave={this.handleUpdateBookmark}
-          bookmark={bookmarkList[activeBookmarkId].bookmark}
-        />
-      ) : (
-        ""
-      );
-    };
-
-    const renderUpdateFolderModal = () => {
-      const {
-        isUpdateFolderModalOpened,
-        onToggleUpdateFolder,
-        bookmarkList,
-        activeBookmarkId,
-        onEditFolder
-      } = this.props;
-      return isUpdateFolderModalOpened ? (
-        <ModalUpdateFolder
-          onCancel={onToggleUpdateFolder}
-          onSave={this.handleUpdateFolder}
-          folder={bookmarkList[activeBookmarkId].folder}
-        />
-      ) : (
-        ""
-      );
-    };
-
     const renderChildFolder = folder => {
       const id = folder.id;
-      const { onToggleUpdateFolder } = this.props;
+      const parentId = this.props.folder.id;
       return (
         <ChildItem
           key={id}
           type={"folder"}
-          onToggleUpdateModal={e => this.handleOpenUpdateFolderModal(id, e)}
+          onToggleUpdateModal={() => this.handleOpenUpdateFolderModal(id)}
           onClick={this.handleOnItemClick}
           onItemClick={e => this.handleOnItemClick(id, e)}
           onOpenBookmark={e => this.handleDoubleClickFolder(id, e)}
+          onDelete={() => onDeleteFolder(id, parentId)}
           active={isActive(id)}
         >
           <FolderItem {...folder} />
@@ -165,15 +111,16 @@ class ChildContainer extends Component {
 
     const renderChildBookmark = bookmark => {
       const { id, url } = bookmark;
-      const { onToggleUpdateBookmark } = this.props;
+      const { folder } = this.props;
       return (
         <ChildItem
           key={id}
           type={"bookmark"}
-          onToggleUpdateModal={e => this.handleOpenUpdateBookmarkModal(id, e)}
+          onToggleUpdateModal={() => this.handleOpenUpdateBookmarkModal(id)}
           onItemClick={e => this.handleOnItemClick(id, e)}
           onOpenBookmark={e => this.handleDoubleClickBookmark(url, e)}
-          active={isActive(id)}
+          onDelete={() => onDeleteBookmark(id, folder.id)}
+          active={isActive(id, folder.id)}
         >
           <BookmarkItem {...bookmark} />
         </ChildItem>
@@ -193,9 +140,6 @@ class ChildContainer extends Component {
 
     return (
       <>
-        {renderUpdateFolderModal()}
-        {renderUpdateBookmarkModal()}
-
         {orderChildIds.length ? (
           <ChildsList>{renderChild}</ChildsList>
         ) : (
@@ -212,9 +156,7 @@ const mapStateToProps = (state, ownProps) => {
   return {
     folder: state.folders.byId[id],
     bookmarkList: getBookmarkItemlistById(state, id),
-    activeBookmarkId: state.activeBookmarkId,
-    isUpdateBookmarkModalOpened: state.modals.isUpdateBookmarkModalOpened,
-    isUpdateFolderModalOpened: state.modals.isUpdateFolderModalOpened
+    activeBookmarkId: state.activeBookmarkId
   };
 };
 
@@ -226,17 +168,16 @@ const mapDispatchToProps = dispatch => {
     onSelectBookmark: id => {
       dispatch(selectBookmark(id));
     },
-    onToggleUpdateBookmark: () => {
-      dispatch(toggleUpdateBookmarkModal());
+    onDeleteBookmark: (id, folderId) => {
+      dispatch(deleteBookmarkChild(id, folderId));
+      dispatch(deleteBookmark(id));
     },
-    onToggleUpdateFolder: () => {
-      dispatch(toggleUpdateFolderModal());
+    onDeleteFolder: (id, folderId) => {
+      dispatch(deleteFolderChild(id, folderId));
+      dispatch(deleteFolder(id));
     },
-    onEditBookmark: (bookmarkId, name, url) => {
-      dispatch(editBookmark(bookmarkId, name, url));
-    },
-    onEditFolder: (folderId, name) => {
-      dispatch(editFolderName(folderId, name));
+    onShowModal: (modalType, modalProps) => {
+      dispatch(showModal(modalType, modalProps));
     }
   };
 };

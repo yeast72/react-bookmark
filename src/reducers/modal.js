@@ -1,42 +1,24 @@
-import {
-  TOGGLE_UPDATE_FOLDER_MODAL,
-  TOGGLE_ADD_BOOKMARK_MODAL,
-  TOGGLE_ADD_FOLDER_MODAL,
-  TOGGLE_UPDATE_BOOKMARK_MODAL
-} from "../constant/actionTypes";
+import { SHOW_MODAL, HIDE_MODAL } from "../constant/actionTypes";
 
 const initailState = {
-  isAddBookmarkModalOpened: false,
-  isAddFolderModalOpened: false,
-  isUpdateBookmarkModalOpened: false,
-  isUpdateFolderModalOpened: false
+  modalType: null,
+  modalProps: {}
 };
 
-const modals = (state = initailState, action) => {
+const modal = (state = initailState, action) => {
   switch (action.type) {
-    case TOGGLE_ADD_BOOKMARK_MODAL:
+    case SHOW_MODAL:
       return {
-        ...state,
-        isAddBookmarkModalOpened: !state.isAddBookmarkModalOpened
+        modalType: action.modalType,
+        modalProps: action.modalProps
       };
-    case TOGGLE_ADD_FOLDER_MODAL:
+    case HIDE_MODAL:
       return {
-        ...state,
-        isAddFolderModalOpened: !state.isAddFolderModalOpened
-      };
-    case TOGGLE_UPDATE_BOOKMARK_MODAL:
-      return {
-        ...state,
-        isUpdateBookmarkModalOpened: !state.isUpdateBookmarkModalOpened
-      };
-    case TOGGLE_UPDATE_FOLDER_MODAL:
-      return {
-        ...state,
-        isUpdateFolderModalOpened: !state.isUpdateFolderModalOpened
+        initailState
       };
     default:
       return state;
   }
 };
 
-export default modals;
+export default modal;

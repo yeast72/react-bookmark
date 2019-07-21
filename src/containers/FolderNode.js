@@ -12,7 +12,13 @@ import {
 import Folder from "../components/Folder/Folder";
 
 import history from "../history";
-import { selectFolder, deleteFolder, deleteFolderChild } from "../actions";
+import {
+  selectFolder,
+  deleteFolder,
+  deleteFolderChild,
+  editFolderName,
+  showModal
+} from "../actions";
 
 const Container = styled.div`
   cursor: pointer;
@@ -48,6 +54,12 @@ export class FolderNode extends Component {
     this.handleOnSelectFolder = this.handleOnSelectFolder.bind(this);
     this.handleToggleFolder = this.handleToggleFolder.bind(this);
     this.handleDeleteFolder = this.handleDeleteFolder.bind(this);
+    this.handleOnEditFolderButton = this.handleOnEditFolderButton.bind(this);
+  }
+
+  handleOnEditFolderButton() {
+    const { onShowModal, id } = this.props;
+    onShowModal("UPDATE_FOLDER", { id: id });
   }
 
   handleToggleFolder(e) {
@@ -59,7 +71,6 @@ export class FolderNode extends Component {
     const {
       id,
       onDeleteFolder,
-      onDeleteFolderChild,
       onSelectFolder,
       parentId,
       selectedFolderId
@@ -70,8 +81,7 @@ export class FolderNode extends Component {
       onSelectFolder(parentId);
       history.push(`${parentId}`);
     }
-    onDeleteFolderChild(parentId, id);
-    onDeleteFolder(id);
+    onDeleteFolder(id, parentId);
   }
 
   handleOnSelectFolder(e) {
@@ -102,7 +112,7 @@ export class FolderNode extends Component {
     const renderOption = (
       <>
         <StyleButton onClick={this.handleDeleteFolder} icon={faTrashAlt} />
-        <StyleButton icon={faEdit} />
+        <StyleButton onClick={this.handleOnEditFolderButton} icon={faEdit} />
       </>
     );
     const renderToggleFolder = (
@@ -145,11 +155,15 @@ const mapDispatchToProps = dispatch => {
     onSelectFolder: id => {
       dispatch(selectFolder(id));
     },
-    onDeleteFolder: id => {
+    onDeleteFolder: (id, parentId) => {
+      dispatch(deleteFolderChild(id, parentId));
       dispatch(deleteFolder(id));
     },
-    onDeleteFolderChild: (folderId, childId) => {
-      dispatch(deleteFolderChild(folderId, childId));
+    onEditFolder: (id, name) => {
+      dispatch(editFolderName(id, name));
+    },
+    onShowModal: (modalType, modalProps) => {
+      dispatch(showModal(modalType, modalProps));
     }
   };
 };

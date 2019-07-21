@@ -16,8 +16,6 @@ const ModalContainer = styled.div`
   justify-content: center;
 `;
 
-const Header = styled.div``;
-
 const ModalContent = styled.div`
   margin: auto;
 `;
@@ -28,7 +26,7 @@ const ModalBox = styled.div`
   width: 450px;
   height: 300px;
 `;
-class Modal extends React.Component {
+class Modal extends Component {
   constructor(props) {
     super(props);
     this.el = document.createElement("div");

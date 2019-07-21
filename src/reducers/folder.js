@@ -25,11 +25,11 @@ const orderChildIds = (state = [], action) => {
     case ADD_FOLDER_CHILD:
       return [...state, action.childId];
     case DELETE_FOLDER_CHILD:
-      return state.filter(id => id !== action.childId);
+      return state.filter(id => id.toString() !== action.childId.toString());
     case ADD_BOOKMARK_CHILD:
       return [...state, action.bookmarkId];
     case DELETE_BOOKMARK_CHILD:
-      return state.filter(id => id != action.bookmarkId);
+      return state.filter(id => id.toString() !== action.bookmarkId.toString());
     default:
       return state;
   }
@@ -40,7 +40,7 @@ const childFolderIds = (state = [], action) => {
     case ADD_FOLDER_CHILD:
       return [...state, action.childId];
     case DELETE_FOLDER_CHILD:
-      return state.filter(id => id !== action.childId);
+      return state.filter(id => id.toString() !== action.childId.toString());
     default:
       return state;
   }
@@ -51,7 +51,7 @@ const bookmarkIds = (state = [], action) => {
     case ADD_BOOKMARK_CHILD:
       return [...state, action.bookmarkId];
     case DELETE_BOOKMARK_CHILD:
-      return state.filter(id => id != action.bookmarkId);
+      return state.filter(id => id.toString() !== action.bookmarkId.toString());
     default:
       return state;
   }

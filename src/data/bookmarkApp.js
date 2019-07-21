@@ -1,6 +1,3 @@
-import folders from "./folders.json";
-import bookmarks from "./bookmarks.json";
-
 const FOLDERS_STORAGE_KEY = "folders";
 const BOOKMARKS_STORAGE_KEY = "bookmarks";
 
