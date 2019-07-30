@@ -13,12 +13,18 @@ import {
 } from "../constant/actionTypes";
 
 const initialFolder = {
-  id: "",
-  name: "",
+  id: "0",
+  name: "Bookmark Bar",
   childFolderIds: [],
   bookmarkIds: [],
   orderChildIds: []
 };
+
+const initailById = {
+  "0": initialFolder
+};
+
+const initVisibleId = [0];
 
 const orderChildIds = (state = [], action) => {
   switch (action.type) {
@@ -90,7 +96,7 @@ const folders = (state = initialFolder, action) => {
   }
 };
 
-const byId = (state = {}, action) => {
+const byId = (state = initailById, action) => {
   const { folderId } = action;
   switch (action.type) {
     case RECEIVE_FOLDERS:
@@ -121,7 +127,7 @@ const byId = (state = {}, action) => {
   }
 };
 
-const visibleFolderIds = (state = [], action) => {
+const visibleFolderIds = (state = initVisibleId, action) => {
   switch (action.type) {
     case RECEIVE_FOLDERS:
       return action.folders.map(folder => folder.id);
@@ -133,7 +139,7 @@ const visibleFolderIds = (state = [], action) => {
   }
 };
 
-const selectedFolderId = (state = "", action) => {
+const selectedFolderId = (state = "0", action) => {
   switch (action.type) {
     case RECEIVE_FOLDERS:
       return "0";

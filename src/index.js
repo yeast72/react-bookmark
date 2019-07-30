@@ -16,10 +16,8 @@ import App from "./containers/App";
 
 import "./index.css";
 
-const persistConfig = {
-  key: "root",
-  storage
-};
+import { PersistGate } from "redux-persist/lib/integration/react";
+import { persistor, store } from "./store";
 
 const middlewareEnhancer = applyMiddleware(loggerMiddleware, thunk);
 const composedEnhancers = compose(
@@ -28,14 +26,16 @@ const composedEnhancers = compose(
   window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__()
 );
 
-const store = createStore(reducer /* preloadedState, */, composedEnhancers);
+// const store = createStore(reducer /* preloadedState, */, composedEnhancers);
 
-store.dispatch(getAllFolders());
-store.dispatch(getAllBookmarks());
+// store.dispatch(getAllFolders());
+// store.dispatch(getAllBookmarks());
 
 ReactDOM.render(
   <Provider store={store}>
-    <App />
+    <PersistGate loading={null} persistor={persistor}>
+      <App />
+    </PersistGate>
   </Provider>,
 
   document.getElementById("root")
