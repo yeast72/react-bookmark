@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import uuidv1 from "uuid/v1";
+import styled from "styled-components";
 
 import { connect } from "react-redux";
 import { hideModal, createBookmark, addBookmark } from "../../actions";

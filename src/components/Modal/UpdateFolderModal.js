@@ -41,7 +41,7 @@ class UpdateFolderModal extends Component {
           />
         </div>
         <button onClick={this.handleSave}>Save</button>
-        <button onClick={onCancel}>Cancel</button>
+        <button onClick={this.props.hideModal}>Cancel</button>
       </Modal>
     );
   }

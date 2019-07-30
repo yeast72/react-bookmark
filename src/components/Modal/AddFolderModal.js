@@ -33,7 +33,6 @@ class AddFolderModal extends Component {
   }
 
   render() {
-    const { onCancel } = this.props;
     return (
       <Modal title="Add Folder">
         <div>
@@ -46,7 +45,7 @@ class AddFolderModal extends Component {
           />
         </div>
         <button onClick={this.handleSave}>Save</button>
-        <button onClick={onCancel}>Cancel</button>
+        <button onClick={this.props.hideModal}>Cancel</button>
       </Modal>
     );
   }

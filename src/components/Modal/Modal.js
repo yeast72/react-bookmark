@@ -17,15 +17,17 @@ const ModalContainer = styled.div`
 `;
 
 const ModalContent = styled.div`
-  margin: auto;
+  margin: 20px;
 `;
 
 const ModalBox = styled.div`
   background-color: #e7e9e7;
+  border-radius: 20px;
   display: block;
   width: 450px;
   height: 300px;
 `;
+
 class Modal extends Component {
   constructor(props) {
     super(props);
@@ -51,10 +53,9 @@ class Modal extends Component {
       <ModalContainer onClick={this.handleClickOutsideBox}>
         <ModalBox>
           <ModalContent>
-            <h1>{title}</h1>
-            <div>{this.props.children}</div>
-          </ModalContent>
-        </ModalBox>
+            <h1> {title} </h1> <div> {this.props.children} </div>{" "}
+          </ModalContent>{" "}
+        </ModalBox>{" "}
       </ModalContainer>
     );
 
